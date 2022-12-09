@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/ComfortDelgro/models"
-	"log"
+	"go.uber.org/zap"
 	"time"
 
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -12,7 +12,8 @@ import (
 
 // InitMessageQ 入参为只读string类型channel, int类型client ID号，string类型exchange Name
 func InitMessageQ(c <-chan models.SMS, id int, exName string) {
-	conn, err := amqp.Dial("amqp://MjphbXFwLWNuLTJyNDJ3d3VxMDAwMzpMVEFJNXRRcTVjWG1YSEg0OG1YUjcxeWk=:MDJDM0YwQjg2RUJGNkFBMzc2OTM0RDEzQjYyREJGNTlFRTE5OTQ5NzoxNjY1NzIyMTYyOTM3@amqp-cn-2r42wwuq0003.ap-southeast-1.amqp-0.net.mq.amqp.aliyuncs.com:5672/Vhost-CSD")
+	//conn, err := amqp.Dial("amqp://MjphbXFwLWNuLTJyNDJ3d3VxMDAwMzpMVEFJNXRRcTVjWG1YSEg0OG1YUjcxeWk=:MDJDM0YwQjg2RUJGNkFBMzc2OTM0RDEzQjYyREJGNTlFRTE5OTQ5NzoxNjY1NzIyMTYyOTM3@amqp-cn-2r42wwuq0003.ap-southeast-1.amqp-0.net.mq.amqp.aliyuncs.com:5672/Vhost-CSD")
+	conn, err := amqp.Dial("amqp://admin:csd@123@8.219.242.242:31656/")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
@@ -47,14 +48,16 @@ func InitMessageQ(c <-chan models.SMS, id int, exName string) {
 				//Body:        []byte(body.Messages),
 				Body: m,
 			})
-		failOnError(err, "Failed to publish message: "+body.Payload)
-
-		log.Printf(" [x] Client%d push MQ %s", id, body.Payload)
+		if err != nil {
+			zap.L().Error(err.Error())
+		} else {
+			zap.L().Info(" [x] Client push MQ" + body.Payload)
+		}
 	}
 }
 
 func InitMbQ(c <-chan models.MbRc, id int, exName string) {
-	conn, err := amqp.Dial("amqp://MjphbXFwLWNuLTJyNDJ3d3VxMDAwMzpMVEFJNXRRcTVjWG1YSEg0OG1YUjcxeWk=:MDJDM0YwQjg2RUJGNkFBMzc2OTM0RDEzQjYyREJGNTlFRTE5OTQ5NzoxNjY1NzIyMTYyOTM3@amqp-cn-2r42wwuq0003.ap-southeast-1.amqp-0.net.mq.amqp.aliyuncs.com:5672/Vhost-CSD")
+	conn, err := amqp.Dial("amqp://admin:csd@123@8.219.242.242:31656/")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
@@ -88,14 +91,16 @@ func InitMbQ(c <-chan models.MbRc, id int, exName string) {
 				ContentType: "text/plain",
 				Body:        m,
 			})
-		failOnError(err, "Failed to publish message: "+body.Payload)
-
-		log.Printf(" [x] Client%d push MQ %s", id, body.Payload)
+		if err != nil {
+			zap.L().Error(err.Error())
+		} else {
+			zap.L().Info(" [x] Client push MQ" + body.Payload)
+		}
 	}
 }
 
 func failOnError(err error, msg string) {
 	if err != nil {
-		log.Panicf("%s: %s", msg, err)
+		zap.L().Fatal(msg + err.Error())
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/ComfortDelgro/models"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 	"net/http"
 )
 
@@ -17,11 +18,11 @@ func SendSms(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("receive messages: " + sms.Payload)
+	zap.L().Info("receive messages: " + sms.Payload)
 
 	channel, exist := c.Get("inBoundChan")
 	if exist != true {
-		fmt.Println("no channel found")
+		zap.L().Error("no channel found")
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"data":   "",
 			"status": "internal server error",

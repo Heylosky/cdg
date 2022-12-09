@@ -1,9 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"github.com/ComfortDelgro/controllers/sms"
+	"github.com/ComfortDelgro/logger"
 	"github.com/ComfortDelgro/messageQ"
+	"github.com/ComfortDelgro/middlewares"
 	"github.com/ComfortDelgro/models"
 	"github.com/gin-gonic/gin"
 )
@@ -17,33 +18,37 @@ func mqMiddleware(c *gin.Context) {
 }
 
 func main() {
+	logger.InitLogger()
+
 	// 初始化多个rabbitMQ客户端
 	messageChan = make(chan models.SMS)
 	for i := 0; i < 2; i++ {
 		go messageQ.InitMessageQ(messageChan, i, "inboundSMS")
 	}
-
 	outboundChan = make(chan models.MbRc)
 	for i := 0; i < 2; i++ {
 		go messageQ.InitMbQ(outboundChan, i, "outboundSMS")
 	}
 
-	r := gin.Default()
+	//启动http服务端，并加载日志中间件
+	r := gin.New()
+	r.Use(logger.GinLogger, logger.GinRecovery(false))
 
 	smsRouters := r.Group("/sms")
-	smsRouters.Use(mqMiddleware)
+	smsRouters.Use(middlewares.TokenVerify, mqMiddleware)
 	{
 		smsRouters.POST("/v1/send", sms.SendSms)
 		smsRouters.POST("/v1/receive", sms.ReceiveSms)
 	}
 
-	r.POST("/test", func(context *gin.Context) {
-		message, _ := context.GetPostForm("payload")
-		fmt.Println(message)
-		context.JSON(200, gin.H{
-			"data": message,
-		})
+	userRouters := r.Group("/user")
+	{
+		userRouters.GET("/tokens")
+	}
+
+	r.GET("/healthz", func(context *gin.Context) {
+		context.String(200, "ok")
 	})
 
-	r.Run()
+	r.Run("0.0.0.0:8080")
 }
