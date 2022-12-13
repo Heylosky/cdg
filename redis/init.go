@@ -8,7 +8,7 @@ import (
 
 func GetToken(key string) (string, bool) {
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "8.219.242.242:30379",
+		Addr:     "172.25.240.10:30379",
 		Password: "Welcome@123",
 		DB:       0,
 	})
@@ -25,7 +25,7 @@ func GetToken(key string) (string, bool) {
 
 func SetToken(token string) error {
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "8.219.242.242:30379",
+		Addr:     "172.25.240.10:30379",
 		Password: "Welcome@123",
 		DB:       0,
 	})

@@ -13,7 +13,7 @@ import (
 // InitMessageQ 入参为只读string类型channel, int类型client ID号，string类型exchange Name
 func InitMessageQ(c <-chan models.SMS, id int, exName string) {
 	//conn, err := amqp.Dial("amqp://MjphbXFwLWNuLTJyNDJ3d3VxMDAwMzpMVEFJNXRRcTVjWG1YSEg0OG1YUjcxeWk=:MDJDM0YwQjg2RUJGNkFBMzc2OTM0RDEzQjYyREJGNTlFRTE5OTQ5NzoxNjY1NzIyMTYyOTM3@amqp-cn-2r42wwuq0003.ap-southeast-1.amqp-0.net.mq.amqp.aliyuncs.com:5672/Vhost-CSD")
-	conn, err := amqp.Dial("amqp://admin:csd@123@8.219.242.242:31656/")
+	conn, err := amqp.Dial("amqp://admin:csd@123@172.25.240.10:31656/")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
@@ -57,7 +57,7 @@ func InitMessageQ(c <-chan models.SMS, id int, exName string) {
 }
 
 func InitMbQ(c <-chan models.MbRc, id int, exName string) {
-	conn, err := amqp.Dial("amqp://admin:csd@123@8.219.242.242:31656/")
+	conn, err := amqp.Dial("amqp://admin:csd@123@172.25.240.10:31656/")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 

@@ -89,8 +89,7 @@ func GinLogger(c *gin.Context) {
 	c.Next() //执行中间件后面的方法，剩余部分等待返回时执行
 
 	cost := time.Since(start) //计算收到请求到回复的时间花费
-	logger.Info(
-		"request coming to "+path,
+	logger.Info("request coming to "+path,
 		zap.Int("status", c.Writer.Status()),
 		zap.String("method", c.Request.Method),
 		zap.String("path", path),
