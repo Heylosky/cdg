@@ -76,7 +76,8 @@ func InitLogger() (err error) {
 	logger := zap.New(core, zap.AddCaller())
 	zap.ReplaceGlobals(logger)
 
-	// return logger 如果return了logger就可以使用之前的ginzap.Ginzap和ginzap.RecoveryWithZap。
+	// return logger
+	// 如果return了logger就可以USE之前的ginzap.Ginzap和ginzap.RecoveryWithZap这两个中间件。
 	return
 }
 
