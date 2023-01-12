@@ -11,6 +11,6 @@ RUN go build -o cdgserver .
 
 FROM scratch
 COPY --from=builder /build/cdgserver /
-COPY --from=builder /build/cdg.log /
+COPY --from=builder /build/logs /
 EXPOSE 8080
 ENTRYPOINT ["/cdgserver"]
