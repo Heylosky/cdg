@@ -7,6 +7,7 @@ import (
 	"github.com/ComfortDelgro/middlewares"
 	"github.com/ComfortDelgro/models"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 var messageChan chan models.SMS
@@ -50,5 +51,6 @@ func main() {
 		context.String(200, "ok")
 	})
 
+	zap.L().Info("CDG server starting.")
 	r.Run("0.0.0.0:8080")
 }

@@ -15,7 +15,7 @@ import (
 
 const (
 	mode        = "dev"              //模式
-	filename    = "./cdg.log"        //日志存放路径
+	filename    = "./logs/cdg.log"   //日志存放路径
 	level       = zapcore.DebugLevel //日志级别
 	max_size    = 200                //最大存储大小，MB
 	max_age     = 30                 //最大存储时间days
